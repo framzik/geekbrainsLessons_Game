@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Game extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	Texture fon;
 	TextureRegion region;
 	int x, y;
 
@@ -16,6 +17,7 @@ public class Game extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		fon = new Texture("astronavt.jpg");
 		region = new TextureRegion(img, 20, 25, 100, 100);
 	}
 
@@ -23,6 +25,7 @@ public class Game extends ApplicationAdapter {
 	public void render () {
 		ScreenUtils.clear(0.5f, 0.23f, 0.74f, 1);
 		batch.begin();
+		batch.draw(fon,-150,-100);
 		batch.setColor(1, 1, 1, 0.5f);
 		batch.draw(img, x, y, 150, 150);
 		batch.setColor(1f, 0.3f, 0.7f, 1f);
