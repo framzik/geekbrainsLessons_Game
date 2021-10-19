@@ -1,61 +1,57 @@
 package ru.khrebtov.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.khrebtov.base.BaseScreen;
+import ru.khrebtov.math.Rect;
+import ru.khrebtov.sprite.Background;
 
 
 public class MenuScreen extends BaseScreen {
 
-    private static final float V_LEN = 0.5f;
-
-    private Texture fon;
+    private Texture bg;
     private Texture img;
     private Vector2 pos;
-    private Vector2 touch;
-    private Vector2 v;
-    private Vector2 tmp;
+
+    private Background background;
 
     @Override
     public void show() {
         super.show();
-        fon = new Texture("astronavt.jpg");
+        bg = new Texture("textures/bg.png");
+        background = new Background(bg);
+
         img = new Texture("badlogic.jpg");
         pos = new Vector2();
-        touch = new Vector2();
-        v = new Vector2(1, 1);
-        tmp = new Vector2();
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        tmp.set(touch);
-        if (tmp.sub(pos).len() > V_LEN) {
-            pos.add(v);
-        } else {
-            pos.set(touch);
-        }
         batch.begin();
-        batch.draw(fon, -150, -100);
-        batch.draw(img, pos.x, pos.y);
+        background.draw(batch);
+        batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
         batch.end();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        batch.dispose();
+        bg.dispose();
         img.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        v.set(touch.cpy().sub(pos)).setLength(V_LEN);
-        return super.touchDown(screenX, screenY, pointer, button);
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        pos.set(touch);
+        return super.touchDown(touch, pointer, button);
     }
 
 }
