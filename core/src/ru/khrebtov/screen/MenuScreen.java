@@ -6,52 +6,62 @@ import com.badlogic.gdx.math.Vector2;
 import ru.khrebtov.base.BaseScreen;
 import ru.khrebtov.math.Rect;
 import ru.khrebtov.sprite.Background;
+import ru.khrebtov.sprite.Logo;
 
 
 public class MenuScreen extends BaseScreen {
 
-    private Texture bg;
     private Texture img;
-    private Vector2 pos;
+    private Texture bg;
 
     private Background background;
+    private Logo logo;
 
     @Override
     public void show() {
         super.show();
-        bg = new Texture("textures/bg.png");
-        background = new Background(bg);
-
         img = new Texture("badlogic.jpg");
-        pos = new Vector2();
+        bg = new Texture("textures/bg.png");
+
+        background = new Background(bg);
+        logo = new Logo(img);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        batch.begin();
-        background.draw(batch);
-        batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
-        batch.end();
+        update(delta);
+        draw();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        bg.dispose();
         img.dispose();
+        bg.dispose();
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        pos.set(touch);
-        return super.touchDown(touch, pointer, button);
+        logo.touchDown(touch, pointer, button);
+        return false;
     }
 
+    private void update(float delta) {
+        logo.update(delta);
+    }
+
+    private void draw() {
+        batch.begin();
+        background.draw(batch);
+        logo.draw(batch);
+        batch.end();
+    }
 }
