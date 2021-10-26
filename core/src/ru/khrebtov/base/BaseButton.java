@@ -12,6 +12,10 @@ public abstract class BaseButton extends Sprite {
         super(region);
     }
 
+    public BaseButton(TextureRegion region, int rows, int cols, int frames) {
+        super(region, rows, cols, frames);
+    }
+
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         if (pressed || !isMe(touch)) {
