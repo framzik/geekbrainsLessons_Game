@@ -2,33 +2,50 @@ package ru.khrebtov.sprite;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.khrebtov.base.BaseButton;
+import ru.khrebtov.base.Sprite;
 import ru.khrebtov.math.Rect;
+import ru.khrebtov.pool.BulletPool;
 
-public class MainShip extends BaseButton {
+
+public class MainShip extends Sprite {
+
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
 
-    private final Vector2 v0 = new Vector2(0.5f, 0);
-    private final Vector2 v = new Vector2();
+    private final BulletPool bulletPool;
+    private final TextureRegion bulletRegion;
+    private final Vector2 bulletV;
+    private final float bulletHeight;
+    private final int damage;
 
+    private final Vector2 v;
+    private final Vector2 v0;
+
+    private Rect worldBounds;
     private boolean pressedLeft;
     private boolean pressedRight;
 
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    private Rect worldBounds;
-
-    public MainShip(TextureAtlas atlas) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.bulletPool = bulletPool;
+        this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.bulletV = new Vector2(0, 0.5f);
+        this.bulletHeight = 0.01f;
+        this.damage = 1;
+        this.v = new Vector2();
+        this.v0 = new Vector2(0.5f, 0);
     }
 
     @Override
     public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
         this.worldBounds = worldBounds;
         setHeightProportion(HEIGHT);
         setBottom(worldBounds.getBottom() + BOTTOM_MARGIN);
@@ -37,14 +54,20 @@ public class MainShip extends BaseButton {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
+//        if (getRight() > worldBounds.getRight()) {
+//            setRight(worldBounds.getRight());
+//            stop();
+//        }
+//        if (getLeft() < worldBounds.getLeft()) {
+//            setLeft(worldBounds.getLeft());
+//            stop();
+//        }
 
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
+        if (getLeft() > worldBounds.getRight()) {
+            setRight(worldBounds.getLeft());
         }
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
+        if (getRight() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getRight());
         }
     }
 
@@ -86,11 +109,6 @@ public class MainShip extends BaseButton {
         return false;
     }
 
-    @Override
-    public void action() {
-
-    }
-
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.A:
@@ -104,6 +122,7 @@ public class MainShip extends BaseButton {
                 moveRight();
                 break;
             case Input.Keys.UP:
+                shoot();
                 break;
         }
         return false;
@@ -144,4 +163,10 @@ public class MainShip extends BaseButton {
     private void stop() {
         v.setZero();
     }
+
+    private void shoot() {
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(this, bulletRegion, this.pos, bulletV, worldBounds, bulletHeight, damage);
+    }
+
 }

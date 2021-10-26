@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.khrebtov.math.MatrixUtils;
 import ru.khrebtov.math.Rect;
+import ru.khrebtov.util.Regions;
+
 
 public class Sprite extends Rect {
 
@@ -13,6 +14,11 @@ public class Sprite extends Rect {
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
+    private boolean destroyed;
+
+    public Sprite() {
+
+    }
 
     public Sprite(TextureRegion region) {
         if (region == null) {
@@ -22,8 +28,8 @@ public class Sprite extends Rect {
         regions[0] = region;
     }
 
-    public Sprite(TextureRegion region, int rows, int cols, int frames) {
-        this.regions = MatrixUtils.split(region, rows, cols, frames);
+    public Sprite (TextureRegion region, int rows, int cols, int frames) {
+        this.regions = Regions.split(region, rows, cols, frames);
     }
 
     public void setHeightProportion(float height) {
@@ -78,5 +84,17 @@ public class Sprite extends Rect {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
+
+    public void flushDestroy() {
+        destroyed = false;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 }
