@@ -50,9 +50,9 @@ public class EnemyEmitter {
         this.enemyPool = enemyPool;
         this.worldBounds = worldBounds;
         bulletRegion = atlas.findRegion("bulletEnemy");
-        enemySmallRegions = Regions.split(atlas.findRegion("enemy0"), 1, 2,2);
-        enemyMediumRegions = Regions.split(atlas.findRegion("enemy1"), 1, 2,2);
-        enemyBigRegions = Regions.split(atlas.findRegion("enemy2"), 1, 2,2);
+        enemySmallRegions = Regions.split(atlas.findRegion("enemy0"), 1, 2, 2);
+        enemyMediumRegions = Regions.split(atlas.findRegion("enemy1"), 1, 2, 2);
+        enemyBigRegions = Regions.split(atlas.findRegion("enemy2"), 1, 2, 2);
     }
 
     private float generateTimer;
