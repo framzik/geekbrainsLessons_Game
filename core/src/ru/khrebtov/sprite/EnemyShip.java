@@ -9,6 +9,9 @@ import ru.khrebtov.math.Rect;
 import ru.khrebtov.pool.BulletPool;
 
 public class EnemyShip extends Ship {
+    private Vector2 startV = new Vector2(0, -0.8f);
+    private Vector2 v3 = new Vector2();
+    int fistBullet = 0;
 
     public EnemyShip(BulletPool bulletPool, Rect worldBounds, Sound bulletSound) {
         this.bulletPool = bulletPool;
@@ -23,6 +26,14 @@ public class EnemyShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
+        if (getTop() <= worldBounds.getTop()) {
+            v.set(v3);
+            if (fistBullet==0){
+                shoot();
+                fistBullet++;
+            }
+        }
+
         if (getBottom() < worldBounds.getBottom()) {
             destroy();
         }
@@ -40,7 +51,8 @@ public class EnemyShip extends Ship {
             float height
     ) {
         this.regions = regions;
-        this.v.set(v);
+        this.v.set(startV);
+        this.v3.set(v);
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
         this.bulletV.set(bulletV);
