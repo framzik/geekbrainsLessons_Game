@@ -16,7 +16,9 @@ import ru.khrebtov.pool.ExplosionPool;
 import ru.khrebtov.sprite.Background;
 import ru.khrebtov.sprite.Bullet;
 import ru.khrebtov.sprite.EnemyShip;
+import ru.khrebtov.sprite.GameOver;
 import ru.khrebtov.sprite.MainShip;
+import ru.khrebtov.sprite.NewGameButton;
 import ru.khrebtov.sprite.Star;
 import ru.khrebtov.util.EnemyEmitter;
 
@@ -43,6 +45,9 @@ public class GameScreen extends BaseScreen {
 
     private EnemyEmitter enemyEmitter;
 
+    private GameOver gameOver;
+    private NewGameButton newGameButton;
+
     @Override
     public void show() {
         super.show();
@@ -66,6 +71,9 @@ public class GameScreen extends BaseScreen {
         mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
 
         enemyEmitter = new EnemyEmitter(enemyPool, worldBounds, atlas);
+
+        gameOver = new GameOver(atlas);
+        newGameButton = new NewGameButton(atlas, this);
     }
 
     @Override
@@ -85,6 +93,8 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        gameOver.resize(worldBounds);
+        newGameButton.resize(worldBounds);
     }
 
     @Override
@@ -115,13 +125,21 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        mainShip.touchDown(touch, pointer, button);
+        if (!mainShip.isDestroyed()) {
+            mainShip.touchDown(touch, pointer, button);
+        } else {
+            newGameButton.touchDown(touch, pointer, button);
+        }
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        mainShip.touchUp(touch, pointer, button);
+        if (!mainShip.isDestroyed()) {
+            mainShip.touchUp(touch, pointer, button);
+        } else {
+            newGameButton.touchUp(touch, pointer, button);
+        }
         return false;
     }
 
@@ -189,8 +207,19 @@ public class GameScreen extends BaseScreen {
             bulletPool.drawActiveObjects(batch);
             enemyPool.drawActiveObjects(batch);
             mainShip.draw(batch);
+        }else {
+            gameOver.draw(batch);
+            newGameButton.draw(batch);
         }
         explosionPool.drawActiveObjects(batch);
         batch.end();
+    }
+
+    public void startNewGame() {
+        mainShip.startNewGame();
+
+        bulletPool.freeAllActiveObjects();
+        enemyPool.freeAllActiveObjects();
+        explosionPool.freeAllActiveObjects();
     }
 }
